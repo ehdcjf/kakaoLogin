@@ -1,0 +1,35 @@
+<form action="/login" method="post">
+  아이디:<input type="text" name="userid"><br>
+  비밀번호:<input type="password" name ="userpw"><br>
+  <input type="submit" value="로그인">
+</form>
+
+<button id ="req">요청 테스트</button>
+<span class="root"></span>
+<script type="text/javascript">
+  // fetch
+  const btn = document.querySelector('#req'); 
+  btn.addEventListener('click', ()=>{
+    console.log('req click!');
+     
+    //fetch의 첫번째 인자값은 url 
+    //fetch의 두번째 인자값은 options => 객체 
+    fetch('http://localhost:3000/login2', { 
+      method:'GET',
+      // headers:{'Content- type':'application/json',},
+      // body:JSON.stringify({a:1,b:2})
+    }) // promise객체로 넘김
+    .then(data=>{ 
+      console.log(data); // 처리 결과에 대한 객체를 반환
+      return data.json(); 
+    })
+    .then(json=>{ 
+      console.log(json); 
+      // json.test 
+      const root = document.querySelector('.root'); 
+      root.innerHTML = json.text; 
+    })
+  })
+
+
+</script>
