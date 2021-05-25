@@ -1,0 +1,83 @@
+<iframe class="shareFrm" width="790" height="500" src="http://data.mafra.go.kr" frameborder="0" scrolling="yes" marginheight="0" marginwidth="0"></iframe>
+
+<h1>GET 요청</h1>
+<form action="/login" method="get">
+  <input type="text" name="userid">
+  <input type="password" name="userpw">
+  <input type="submit" value="GET">
+</form>
+
+<h1>POST 요청</h1>
+<form action="/login" method="post">
+  <input type="text" name="userid">
+  <input type="password" name="userpw">
+  <input type="submit" value="POST">
+</form>
+
+<h1>비동기 활용하기 GET</h1>
+<button id = "btn">통신하기</button>
+<div id='loading' >
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADjCAMAAADdXVr2AAAAgVBMVEX39/cAAADw8PDr6+vT09O8vLykpKSNjY11dXVeXl4vLy8XFxdGRkb6+vr////09PSFhYXFxcXZ2dlBQUFvb2+Xl5eenp7Y2Njk5ORpaWnf39++vr5RUVGwsLAQEBBYWFg3Nzd+fn7Ly8soKCisrKwgICAbGxtMTEx5eXk7OztiYmL9pD21AAANYUlEQVR4nO2dbX+qPAyHBRScW4ooIqKiMj1u+/4f8C4+ILRpbdUWb3/+3x6P62WSJk1L6XTeeuutt9566623tAWkFEDb4zAiQqJgNf76m0zJ6wFCJ3HOGvRI28N5sEj27dS0cF/KgCRyGKUvxAddls5xXsh+Lk/n7F8m/kiM4DnbFzEfZBid47wIHvnB8ZYvwpfjeB8vEX0wxekcJ2x7aFcFANeKSFiK8LIn907S6W4nEz/yZFUkJCK8Qo4XHvTgIauLeMHnaaCrSAwIExFeJMEL3bNaAiTUKvnnUbnzlYkmilvwLnBtAZKZ81lT7iwFfDfgNena4CN/DToqJ8H59PFcTrb5qGd+snLwZZw2Hms7+3yQ8nSUD13l6OJhdK5rGKgpskHxVpj5dPFQOrvmCzE6yjdHBqyJhxvPqvkgwvHy7/vxBHQ28cgEx0NnTz08EZ1N76TrUxzv0/G4D2vhiVzTLh6X9Cq8Pmc+LTwhnVW8mQjv05myY9bBExvPKh6aF46zC9ci0sET09nEg60Qj9YuzKA18CTGs4o3EuPlO/bDyngyOqtlCxnkQj4naLqnOp6MzmrVAr7YfDQ5NIatjCc1nuWaeicx36xhPmU8GZ3dkrrsD0nM12iiqOI9TeSVIl9i8+XruvlU8Z7HNTuHTR+J+eqNCUW8pzIeNV9fkhzy2s+thvdE88pRnsx8w4v51PBkdC0YT7IqOvBd+hJKeE9nvCvJ4bI/otSlfjrj0XHPZearTCPeYxhVeE82rx
+  " alt=""> 
+</div>
+<div id = 'getroot'></div>
+<script type="text/javascript">
+  const btn = document.querySelector('#btn'); 
+  btn.addEventListener('click',btnFn); 
+  document.querySelector('#loading').style.display = 'none'; 
+
+  function btnFn(){
+    document.querySelector('#loading').style.display = 'block'; 
+    console.log('req click'); 
+    let options = { 
+      method:'GET', 
+    }
+    fetch('http://localhost:3000/login?userid=asdf&usrpw=asdf',options)
+    .then( data =>{ 
+      if(data.status == 404){ 
+        const root = document.querySelector('#getroot'); 
+        root.innerHTML = '페이지가 존재하지 않음'; 
+      }
+      return data.text(); 
+      //클릭이벤트가 발생하면 로딩창이 나오게 하고
+      //로딩이 완료되면 로딩창을 지워주고 새로운 컨텐츠를 넣어준다.
+  
+    })
+    .then(text=>{
+      document.querySelector('#loading').style.display = 'none'; 
+      const root = document.querySelector('#getroot'); 
+      root.innerHTML += text+'<br>'
+    })
+  }
+</script>
+
+
+<h1>비동기 활용하기 POST</h1>
+<button id = "btn2">통신하기</button>
+<div id = 'postroot'></div>
+<script type="text/javascript">
+  const btn2 = document.querySelector('#btn2'); 
+  btn2.addEventListener('click',btnFn2); 
+
+  function btnFn2(){ 
+    console.log('req click'); 
+    let options = { 
+      method:'POST',
+      headers:{ 
+        // 'content-type':'application/x-www-form-urlencoded', (1)
+        'content-type':'application/json' //(2)//API사용하기 위함. 
+      }, 
+      // body:'userid=duck&userpw=cackle',    //(1)
+      // body:JSON.stringify({userid:'duck',userpw:'cackle'}), //(2) 
+      body:`{"userid":"duck","userpw":"cackle"}` //(2)
+}
+    fetch('http://localhost:3000/login',options)
+    .then( data =>{ 
+      return data.text(); 
+    })
+    .then(text=>{ 
+      const root = document.querySelector('#postroot'); 
+      root.innerHTML += text+'<br>'
+    })
+  }
+</script>
